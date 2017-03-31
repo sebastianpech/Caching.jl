@@ -1,4 +1,5 @@
 # Caching
+[![Build Status](https://travis-ci.org/sebastianpech/Caching.jl.svg?branch=master)](https://travis-ci.org/sebastianpech/Caching.jl)
 
 Caching provides a convenient way for storing previously made calculations.
 
