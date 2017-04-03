@@ -23,10 +23,6 @@ julia> _f(2.4)
 julia> _f(2.4)
   0.000004 seconds (7 allocations: 208 bytes)
 0.675463180551151
-
-julia> storage
-Dict{Tuple,Float64} with 1 entry:
-  (2.4,) => 0.675463
 ```
 """
 macro cache(ex)
@@ -51,8 +47,8 @@ macro cache(ex)
     # Generate function call to generate anonymous function which passes the 
     # input to the underlying function after checking for previously made
     # calculations.
-    ex2 = Expr(:call,(Expr(:->,Expr(:tuple,:(store=Dict{Tuple,$dtype}())),
-                           Expr(:block, :((args...)-> get!(store,args) do
+    ex2 = Expr(:call,(Expr(:->,Expr(:tuple,:(store=Dict{UInt,$dtype}())),
+                           Expr(:block, :((args...)-> get!(store,Caching.hashkeys(args)) do
                                           $func(args...)
                                           end
                                          )
@@ -65,7 +61,7 @@ macro cache(ex)
     if store != nothing
         # Push variable
         push!(ex2.args,store)
-        ex2 = Expr(:block,:($store = Dict{Tuple,$dtype}()),ex2)
+        ex2 = Expr(:block,:($store = Dict{UInt,$dtype}()),ex2)
     end
 
     # Call was done directly during function definition -> override function
@@ -83,4 +79,11 @@ macro cache(ex)
 
     esc(ex2)
 end
+
+function hashkeys(tup::Tuple)
+    hash(map(tup) do xi
+        hash(xi)
+    end)
+end
+
 end

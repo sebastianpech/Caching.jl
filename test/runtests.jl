@@ -16,7 +16,7 @@ res = foo1(11.0)
 @test t2[2] < 0.01
 @test t2[1] == t1[1]
 @test t2[1] == res
-@test store[(11.0,)] == 11.0
+@test store[Caching.hashkeys((11.0,))] == 11.0
 
 @cache function foo2(x)::Float64
     sleep(1)

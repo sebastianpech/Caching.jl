@@ -1,3 +1,4 @@
 *.jl.cov
 *.jl.*.cov
 *.jl.mem
+test/local_test.jl
